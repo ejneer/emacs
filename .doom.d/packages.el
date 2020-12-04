@@ -51,3 +51,4 @@
 (package! org-noter)
 (package! org-pdftools)
 (package! org-noter-pdftools)
+(package! format-all)
