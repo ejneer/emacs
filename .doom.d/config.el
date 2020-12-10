@@ -77,4 +77,5 @@
   (with-eval-after-load 'pdf-annot
    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
-(define-key global-map (kbd "M-0") 'treemacs-select-window)
+(map! :map projectile-mode-map "C-c C-p" 'projectile-command-map)
+(map! "M-0" 'treemacs-select-window)

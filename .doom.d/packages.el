@@ -52,3 +52,4 @@
 (package! org-pdftools)
 (package! org-noter-pdftools)
 (package! format-all)
+(package! ox-hugo)
