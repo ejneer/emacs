@@ -53,3 +53,5 @@
 (package! org-noter-pdftools)
 (package! format-all)
 (package! ox-hugo)
+(package! csv-mode)
+(package! calibredb)

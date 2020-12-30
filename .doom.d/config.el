@@ -79,3 +79,4 @@
 
 (map! :map projectile-mode-map "C-c C-p" 'projectile-command-map)
 (map! "M-0" 'treemacs-select-window)
+(setq calibredb-root-dir "~/library")
