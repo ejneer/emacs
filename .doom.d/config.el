@@ -80,3 +80,9 @@
 (map! :map projectile-mode-map "C-c C-p" 'projectile-command-map)
 (map! "M-0" 'treemacs-select-window)
 (setq calibredb-root-dir "~/library")
+
+(add-hook 'ledger-mode-hook
+          (lambda ()
+            (setq-local tab-always-indent 'complete)
+            (setq-local completion-cycle-threshold t)
+            (setq-local ledger-complete-in-steps t)))
