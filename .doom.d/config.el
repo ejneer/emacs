@@ -68,18 +68,14 @@
  )
 
 ;;  https://github.com/fuxialexander/org-pdftools
-(use-package org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
-
-(use-package org-noter-pdftools
-  :after org-noter
-  :config
-  (with-eval-after-load 'pdf-annot
-   (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-
-(map! :map projectile-mode-map "C-c C-p" 'projectile-command-map)
 (map! "M-0" 'treemacs-select-window)
-(setq calibredb-root-dir "~/library")
+(map! :map ess-mode-map "C->" "%>%")
+(map! :map inferior-ess-mode-map "C->" "%>%")
+(map! :map ess-mode-map "C-<" "<-")
+(map! :map inferior-ess-mode-map "C-<" "<-")
+
+;; ess settings
+(setq ess-roxy-str "#'")
 
 (add-hook 'ledger-mode-hook
           (lambda ()
