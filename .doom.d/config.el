@@ -53,7 +53,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-(define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
+;; (define-key projectile-mode-map (kbd "C-c C-p") 'projectile-command-map)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -82,3 +82,8 @@
             (setq-local tab-always-indent 'complete)
             (setq-local completion-cycle-threshold t)
             (setq-local ledger-complete-in-steps t)))
+(after! ccls
+  (setq ccls-initialization-options '(:index (:comments 2) :completion (:detailedLabel t)))
+  (set-lsp-priority! 'ccls 2)) ; optional as ccls is the default in Doom
+
+(setq citar-bibliography "~/org/references.bib")
