@@ -4,7 +4,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ledger-reports
-   '(("Net Worth" "cat *.ledger | ledger -f - bal ^Assets ^Liabilities -V --price-db prices.db")
+   '(("commodity filter" "cat *.ledger | ledger -f - reg -l \"commodity=~/SNDL/\"")
+     ("Net Worth" "cat *.ledger | ledger -f - bal ^Assets ^Liabilities -V --price-db prices.db")
      ("taxes" "cat *.ledger | ledger -f - bal taxes \"employer paid\" --period \"last year\" -l 'any(account =~ /Income:SB&D:Regular/)' ")
      ("assets + liabilities ($ basis)" "cat *.ledger | ledger -f - bal Assets Liabilities -V --price-db prices.db")
      ("assets + liabilities" "cat *.ledger | ledger -f - bal Assets Liabilities")
@@ -14,7 +15,6 @@
      ("bal" "cat *.ledger | ledger -f - bal")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)")))
- '(package-selected-packages '(org-noter-pdftools org-noter)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -69,10 +69,12 @@
 
 ;;  https://github.com/fuxialexander/org-pdftools
 (map! "M-0" 'treemacs-select-window)
-(map! :map ess-mode-map "C->" "%>%")
-(map! :map inferior-ess-mode-map "C->" "%>%")
+(map! :map ess-mode-map "C->" "|>")
+(map! :map inferior-ess-mode-map "C->" "|>")
 (map! :map ess-mode-map "C-<" "<-")
 (map! :map inferior-ess-mode-map "C-<" "<-")
+
+;; (map! :leader :map ledger-mode "C-c C-f" nil)
 
 ;; ess settings
 (setq ess-roxy-str "#'")
@@ -86,4 +88,29 @@
   (setq ccls-initialization-options '(:index (:comments 2) :completion (:detailedLabel t)))
   (set-lsp-priority! 'ccls 2)) ; optional as ccls is the default in Doom
 
-(setq citar-bibliography "~/org/references.bib")
+(setq citar-bibliography "~/iCloud/roam/references.bib")
+
+(setq org-roam-directory "~/iCloud/roam")
+
+(defvar ejn/gtd-folders (list "~/gtd/" "~/iCloud/gtd/")
+  "Possible locations with GTD files in them."
+  )
+
+(defun ejn/find-gtd-folder ()
+  (car (seq-filter (lambda (elt) (file-directory-p elt)) ejn/gtd-folders))
+  )
+
+(defun ejn/gtd-file (fname)
+  (concat (ejn/find-gtd-folder) fname)
+  )
+
+(load-file (ejn/gtd-file "gtd-config.el"))
+
+(defun my-inferior-ess-init ()
+  (setq-local ansi-color-for-comint-mode 'filter)
+  (smartparens-mode 1))
+
+(add-hook 'inferior-ess-mode-hook 'my-inferior-ess-init)
+
+(setq calibredb-root-dir "~/iCloud/calibre/")
+(setq calibredb-db-dir (expand-file-name "metadata.db" calibredb-root-dir))
