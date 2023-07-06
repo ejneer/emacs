@@ -92,20 +92,6 @@
 
 (setq org-roam-directory "~/iCloud/roam")
 
-(defvar ejn/gtd-folders (list "~/gtd/" "~/iCloud/gtd/")
-  "Possible locations with GTD files in them."
-  )
-
-(defun ejn/find-gtd-folder ()
-  (car (seq-filter (lambda (elt) (file-directory-p elt)) ejn/gtd-folders))
-  )
-
-(defun ejn/gtd-file (fname)
-  (concat (ejn/find-gtd-folder) fname)
-  )
-
-(load-file (ejn/gtd-file "gtd-config.el"))
-
 (defun my-inferior-ess-init ()
   (setq-local ansi-color-for-comint-mode 'filter)
   (smartparens-mode 1))
