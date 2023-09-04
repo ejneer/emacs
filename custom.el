@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ledger-reports
-   '(("Balance, cash and credit cards" "cat *.ledger | ledger -f - print --sort date --permissive | ledger -f - bal \"credit cards\" \\(assets:cash and not escrow\\) \\(investment and not health\\) --cleared --value --price-db prices.db")
-     ("bal" "cat *.ledger | ledger -f - print --sort date --permissive | ledger -f - bal")
-     ("reg" "cat *.ledger | ledger -f - print --sort date --permissive | ledger -f - reg")
+   '(("reg" "ledger -f finances.ledger reg")
+     ("bal" "ledger -f finances.ledger bal")
+     ("Balance, cash and credit cards" "cat *.ledger | ledger -f - print --sort date --permissive | ledger -f - bal \"credit cards\" \\(assets:cash and not escrow\\) \\(investment and not health\\) --cleared --value --price-db prices.db")
      ("commodity filter" "cat *.ledger | ledger -f - reg -l \"commodity=~/SNDL/\"")
      ("Net Worth" "cat *.ledger | ledger -f - bal ^Assets ^Liabilities -V --price-db prices.db")
      ("taxes" "cat *.ledger | ledger -f - bal taxes \"employer paid\" --period \"last year\" -l 'any(account =~ /Income:SB&D:Regular/)' ")
