@@ -1,190 +1,250 @@
-;;; init.el -*- lexical-binding: t; -*-
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("9a977ddae55e0e91c09952e96d614ae0be69727ea78ca145beea1aae01ac78d2"
+     "99d1e29934b9e712651d29735dd8dcd431a651dfbe039df158aa973461af003e"
+     "b1df4108859ad7f683d66f5d3af07f35ae301234c77b5dbdc347e67b8b0c8b4c"
+     "810a6a4ad0dd1cc1acfae6be09a00f1210105d1f8e62a0eeebb765980a2caa51"
+     "18631300c9090ac9f588b07d0ef4b1d093143a31e8c8c29e9fc2a57db1cdf502"
+     default))
+ '(package-selected-packages
+   '(ace-window bufler company-native-complete corfu docker
+		dockerfile-mode dumb-jump eglot-fsharp ess f forge
+		format-all fsharp-mode htmlize httpd ledger-mode
+		marginalia modus-themes ob-sharp orderless org-modern
+		paredit plz poly-R simple-httpd smartparens
+		sr-speedbar vertico)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
-;; This file controls what Doom modules are enabled and what order they load
-;; in. Remember to run 'doom sync' after modifying it!
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
 
-;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
-;;      documentation. There you'll find a "Module Index" link where you'll find
-;;      a comprehensive list of Doom's modules and what flags they support.
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
 
-;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
-;;      'C-c c k' for non-vim users) to view its documentation. This works on
-;;      flags as well (those symbols that start with a plus).
-;;
-;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
-;;      directory (for easy access to its source code)
+(use-package emacs
+  :ensure nil
+  :custom
+  (tab-always-indent 'complete)
+  (text-mode-ispell-word-completion nil)
+  :config
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (toggle-truncate-lines 1)
+  (global-display-line-numbers-mode 1)
+  (delete-selection-mode 1)
+  (global-hl-line-mode)
+  ;; conflict between corfu completion and c mode map
+  ;; see https://github.com/minad/corfu/issues/34#issuecomment-903308126
+  (add-hook 'c-mode (lambda ((when (equal tab-always-indent 'complete)
+			       (define-key c-mode-base-map [remap c-indent-line-or-region] #'completion-at-point)))))
+  (setq use-short-answers t
+	use-dialog-box nil
+	inhibit-startup-message t
+	mac-option-modifier 'meta
+	fill-column 80))
 
-(doom! :input
-       ;;chinese
-       ;;japanese
-       ;;layout            ; auie,ctsrnm is the superior home row
+;; can i make due without these?
+;; (use-package f)
+;; (use-package s)
+;; (use-package dash)
 
-       :completion
-       company           ; the ultimate code completion backend
-       ;;helm              ; the *other* search engine for love and life
-       ;;ido               ; the other *other* search engine...
-       ;;ivy               ; a search engine for love and life
-       vertico           ; the search engine of the future
+(use-package paredit)
 
-       :ui
-       ;;deft              ; notational velocity for Emacs
-       doom              ; what makes DOOM look the way it does
-       doom-dashboard    ; a nifty splash screen for Emacs
-       doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)  ; 🙂
-       hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;hydra
-       ;;indent-guides     ; highlighted indent columns
-       ;;ligatures         ; ligatures and symbols to make your code pretty again
-       ;;minimap           ; show a map of the code on the side
-       modeline          ; snazzy, Atom-inspired modeline, plus API
-       ;;nav-flash         ; blink cursor line after big motions
-       ;;neotree           ; a project drawer, like NERDTree for vim
-       ophints           ; highlight the region an operation acts on
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
-       ;;unicode           ; extended unicode support for various languages
-       vc-gutter         ; vcs diff in the fringe
-       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
-       window-select     ; visually switch windows
-       workspaces        ; tab emulation, persistence & separate workspaces
-       ;;zen               ; distraction-free coding or writing
+(use-package docker
+  :bind ("C-c d" . docker))
+(use-package dockerfile-mode)
 
-       :editor
-       ;;(evil +everywhere); come to the dark side, we have cookies
-       file-templates    ; auto-snippets for empty files
-       fold              ; (nigh) universal code folding
-       format  ; automated prettiness
-       ;;god               ; run Emacs commands without modifier keys
-       ;;lispy             ; vim for lisp, for people who don't like vim
-       ;;multiple-cursors  ; editing in many places at once
-       ;;objed             ; text object editing for the innocent
-       ;;parinfer          ; turn lisp into python, sort of
-       ;;rotate-text       ; cycle region at point between text candidates
-       snippets          ; my elves. They type so I don't have to
-       ;;word-wrap         ; soft wrapping with language-aware indent
+(use-package treesit
+  :ensure nil
+  :config
+  (dolist (grammar '((r . ("https://github.com/r-lib/tree-sitter-r" "v1.1.0"))
+		     (python . ("https://github.com/tree-sitter/tree-sitter-python" "v0.23.2"))))
+    (add-to-list 'treesit-language-source-alist grammar)))
 
-       :emacs
-       dired             ; making dired pretty [functional]
-       electric          ; smarter, keyword-based electric-indent
-       ;;ibuffer         ; interactive buffer management
-       undo              ; persistent, smarter undo for your inevitable mistakes
-       vc                ; version-control and Emacs, sitting in a tree
+(use-package dumb-jump
+  :config
+  (setq xref-show-definitions-function #'xref-show-definitions-completing-read)
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
 
-       :term
-       ;;eshell            ; the elisp shell that works everywhere
-       ;;shell             ; simple shell REPL for Emacs
-       ;;term              ; basic terminal emulator for Emacs
-       ;;vterm             ; the best terminal emulation in Emacs
+(use-package org
+  :ensure nil
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (R . t)
+     (shell . t)
+     (sql . t)
+     (fsharp . t)))
+  (setq org-confirm-babel-evaluate
+	;; return t if user should be prompted, nil otherwise
+	(lambda (lang body)
+	  ;; 2025-01-04 - I used this to whitelist some languages, but it kept
+	  ;; getting in the way. Changed to just allow execution
+	  ;;
+	  ;; (let ((trusted-languages (list "elisp" "R" "sql" "fsharp")))
+	  ;;   (not (member lang trusted-languages)))
+	  nil)
+	org-agenda-files (list org-directory)
+	org-refile-targets '((org-agenda-files . (:maxlevel . 3)))
+	org-refile-use-outline-path t
+	org-outline-path-complete-in-steps nil
+	org-startup-indented t
+	org-hide-leading-stars t
+	org-agenda-files (list "~/gtd")
+	fill-column 80))
 
-       :checkers
-       syntax              ; tasing you for every semicolon you forget
-       ;;(spell +flyspell) ; tasing you for misspelling mispelling
-       ;;grammar           ; tasing grammar mistake every you make
+(use-package modus-themes
+  :config
+  (setq modus-themes-org-blocks 'gray-background)
+  (load-theme 'modus-operandi-tinted))
 
-       :tools
-       ;;ansible
-       biblio
-       ;;debugger          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
-       ;;docker
-       ;;editorconfig      ; let someone else argue about tabs vs spaces
-       ;;ein               ; tame Jupyter notebooks with emacs
-       (eval +overlay)     ; run code, run (also, repls)
-       ;;gist              ; interacting with github gists
-       lookup              ; navigate your code and its documentation
-       lsp               ; M-x vscode
-       (magit +forge)             ; a git porcelain for Emacs
-       make              ; run make tasks from Emacs
-       ;;pass              ; password manager for nerds
-       pdf               ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
-       ;;rgb               ; creating color strings
-       ;;taskrunner        ; taskrunner for all your projects
-       ;;terraform         ; infrastructure as code
-       ;;tmux              ; an API for interacting with tmux
-       ;;upload            ; map local to remote projects via ssh/ftp
+(use-package vertico
+  :custom
+  (vertico-cycle t)
+  (readbuffer-completion-ignore-case t)
+  (read-file-name-completion-ignore-case t)
+  (completion-styles '(basic substring partial-completion flex))
+  :init
+  (vertico-mode))
 
-       :os
-       (:if IS-MAC macos)  ; improve compatibility with macOS
-       ;;tty               ; improve the terminal Emacs experience
+(use-package marginalia
+  :after vertico
+  :init (marginalia-mode))
 
-       :lang
-       ;;agda              ; types of types of types of types...
-       ;;beancount         ; mind the GAAP
-       (cc +lsp)                ; C > C++ == 1
-       ;;clojure           ; java with a lisp
-       common-lisp       ; if you've seen one lisp, you've seen them all
-       ;;coq               ; proofs-as-programs
-       ;;crystal           ; ruby at the speed of c
-       ;;csharp            ; unity, .NET, and mono shenanigans
-       ;;data              ; config/data formats
-       ;;(dart +flutter)   ; paint ui and not much else
-       ;;dhall
-       ;;elixir            ; erlang done right
-       ;;elm               ; care for a cup of TEA?
-       emacs-lisp        ; drown in parentheses
-       ;;erlang            ; an elegant language for a more civilized age
-       (ess +lsp)               ; emacs speaks statistics
-       ;;factor
-       ;;faust             ; dsp, but you get to keep your soul
-       ;;fsharp            ; ML stands for Microsoft's Language
-       ;;fstar             ; (dependent) types and (monadic) effects and Z3
-       ;;gdscript          ; the language you waited for
-       ;;(go +lsp)         ; the hipster dialect
-       ;;(haskell +lsp)    ; a language that's lazier than I am
-       ;;hy                ; readability of scheme w/ speed of python
-       ;;idris             ; a language you can depend on
-       ;;json              ; At least it ain't XML
-       ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
-       ;;julia             ; a better, faster MATLAB
-       ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
-       ;;lean              ; for folks with too much to prove
-       ledger            ; be audit you can be
-       ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
-       ;;nim               ; python + lisp at the speed of c
-       ;;nix               ; I hereby declare "nix geht mehr!"
-       ;;ocaml             ; an objective camel
-       (org +roam2)               ; organize your plain life in plain text
-       ;;php               ; perl's insecure younger brother
-       ;;plantuml          ; diagrams for confusing people more
-       ;;purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
-       ;;qt                ; the 'cutest' gui framework ever
-       ;;racket            ; a DSL for DSLs
-       ;;raku              ; the artist formerly known as perl6
-       ;;rest              ; Emacs as a REST client
-       ;;rst               ; ReST in peace
-       ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-       ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       ;;scala             ; java, but good
-       ;;(scheme +guile)   ; a fully conniving family of lisps
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
-       ;;sml
-       ;;solidity          ; do you need a blockchain? No.
-       ;;swift             ; who asked for emoji variables?
-       ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
-       ;;yaml              ; JSON, but readable
-       ;;zig               ; C, but simpler
+(use-package orderless
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides
+   '((file (styles partial-completion)))))
 
-       :email
-       ;;(mu4e +org +gmail)
-       ;;notmuch
-       ;;(wanderlust +gmail)
+(use-package hideshow
+  :config
+  (define-key hs-minor-mode-map (kbd "C-c C-h") (lookup-key hs-minor-mode-map (kbd "C-c @")))
+  :hook ((prog-mode . hs-minor-mode)))
 
-       :app
-       ;;calendar
-       ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
-       ;;irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
+;; (use-package company
+;;   :hook ((after-init . global-company-mode))
+;;   :custom (company-idle-delay 0))
 
-       :config
-       ;;literate
-       (default +bindings +smartparens))
+;; (use-package company-native-complete
+;;   :config
+;;   (add-to-list 'company-backends 'company-native-complete)
+;;   (setq comint-prompt-regex "^.+[$%>] "))
+
+(use-package savehist
+  :init
+  (savehist-mode))
+
+(use-package which-key
+  :config
+  (which-key-mode))
+
+(use-package ess
+  :vc (ess :url "https://github.com/emacs-ess/ESS"
+	   :branch "tree-sitter"
+	   :lisp-dir "lisp")
+  :init
+  ;; bind-key is required to set key bindings
+  ;; ess-site is required to have the r mode maps available
+  (require 'bind-key)
+  (add-to-list 'load-path "~/.config/emacs/elpa/ess/lisp/")
+  (require 'ess-site)
+  :config
+  (setq ess-auto-width 'window
+	ess-history-directory "~/iCloud/"
+	ess-history-file t)
+  :bind
+  (:map inferior-ess-r-mode-map
+	(("C->" . "|>")
+	 ("C-<" . "<-"))
+	:map ess-r-mode-map
+	(("C->" . "|>")
+	 ("C-<" . "<-"))))
+
+(use-package polymode)
+
+(use-package poly-R)
+
+(use-package format-all
+  :bind ("M-F" . format-all-region-or-buffer))
+
+(use-package magit)
+
+(use-package forge
+  :after magit)
+
+(use-package ace-window
+  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  :bind ("M-o" . ace-window))
+
+(use-package smartparens
+  :hook ((prog-mode . smartparens-mode)))
+
+(use-package ledger-mode
+  :config
+  (defun ejneer-ledger-navigate-next-xact-or-directive ()
+    "go to next transcation and highlight first posting"
+    (interactive)
+    (progn
+      (ledger-navigate-next-xact-or-directive)
+      (let* ((p1 (- (re-search-forward "^    [^;]") 1))
+	     (p2 (progn
+		   (goto-char p1)
+		   (goto-char (line-end-position))
+		   (+ 1 (re-search-backward "[a-zA-Z0-9]  +")))))
+	(push-mark p1)
+	(goto-char p2)
+	(setq mark-active t))))
+  :bind (:map ledger-mode-map
+	      ("M-n" . ejneer-ledger-navigate-next-xact-or-directive)))
+
+(use-package fsharp-mode
+  :bind
+  (:map fsharp-mode-map
+	(("C->" . "->"))))
+
+(use-package eglot-fsharp
+  :after fsharp-mode)
+
+(use-package ob-fsharp
+  :after org)
+
+(use-package corfu
+  ;; Optional customizations
+  ;; :custom
+  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  ;; (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+
+  ;; Enable Corfu only for certain modes. See also `global-corfu-modes'.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.  This is recommended since Dabbrev can
+  ;; be used globally (M-/).  See also the customization variable
+  ;; `global-corfu-modes' to exclude certain modes.
+
+  :init
+  (setq corfu-auto nil
+	corfu-quit-no-match 'separator)
+  (global-corfu-mode))
+
+;; serve personal website files so I can see styling from css files
+(use-package simple-httpd)
